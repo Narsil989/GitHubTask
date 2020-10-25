@@ -29,10 +29,43 @@ struct MainView: View {
                 }, retryAction: {
                     mainVM.simpleSearch()
                 }, error: mainVM.currentState.loadingError)
+                
             }
             .navigationBarTitle("Git repositories", displayMode: .inline)
-        }
+            .navigationBarItems(trailing: (
+                loggedInView()
+            ))
+        }.onOpenURL(perform: { url in
+            if let code = url.valueOf("code") {
+                mainVM.requestAccessToken(code: code)
+            }
+        })
         
+    }
+    
+    private func loggedInView() -> AnyView {
+        if let user = mainVM.currentState.authorizedUser {
+            return AnyView(
+                NavigationLink(
+                    destination: UserDetailsView(author: user),
+                    label: {
+                        Text(user.name)
+                    }))
+        } else {
+            return AnyView(
+                NavigationLink(
+                    destination: LoginView(),
+                    label: {
+                        Text("LOGIN")
+                    }))
+        }
+    }
+}
+
+extension URL {
+    func valueOf(_ queryParamaterName: String) -> String? {
+        guard let url = URLComponents(string: self.absoluteString) else { return nil }
+        return url.queryItems?.first(where: { $0.name == queryParamaterName })?.value
     }
 }
 
@@ -61,10 +94,12 @@ struct RepositoriesList: View {
                 }
                 Spacer()
             } else {
-                List {
-                    reposList
-                    if isLoading {
-                        loadingIndicator
+                VStack {
+                    List {
+                        reposList
+                        if isLoading {
+                            loadingIndicator
+                        }
                     }
                 }
             }

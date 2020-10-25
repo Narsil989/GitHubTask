@@ -14,6 +14,8 @@ class MainVM: ObservableObject {
     
     @Published private(set) var currentState = State()
     @Injected private var service: GitRepositoryService
+    @Injected private var authService: AuthorizationService
+    @Injected private var userManager: UserDefaultsManager
     var searchQuery: String = ""
     var selectedSort: Int = 0
     //private var isLoading = false
@@ -26,6 +28,14 @@ class MainVM: ObservableObject {
         var canLoadNextPage = true
         var isLoading = false
         var loadingError: Error? = nil
+        var authorizedUser: Author?
+    }
+    
+    init() {
+        guard let accessToken = userManager.accessToken else {
+            return
+        }
+        self.fetchAuthorizedUser(token: accessToken)
     }
     
     func simpleSearch() {
@@ -70,7 +80,7 @@ class MainVM: ObservableObject {
                              pageNumber: currentState.page)
             .sinkToResult { [weak self] result in
                 
-                DispatchQueue.main.async {
+                //DispatchQueue.main.async {
                     switch result {
                     case .success(let repos):
                         self?.currentState.repos += repos.items
@@ -80,7 +90,32 @@ class MainVM: ObservableObject {
                         self?.currentState.loadingError = err
                     }
                     self?.currentState.isLoading = false
-                }
+                //}
             }.store(in: cancelBag)
+    }
+    
+    func requestAccessToken(code: String) {
+        authService.accessToken(code: code).sinkToResult { [weak self] result in
+            switch result {
+            case .success(let token):
+                self?.userManager.accessToken = token.accessToken
+                self?.fetchAuthorizedUser(token: token.accessToken)
+                print(token)
+            case .failure(let err):
+                debugPrint(err.localizedDescription)
+            }
+        }.store(in: cancelBag)
+    }
+    
+    func fetchAuthorizedUser(token: String) {
+        authService.user(token: token).sinkToResult { [weak self] result in
+            switch result {
+            case .success(let user):
+                self?.currentState.authorizedUser = user
+            case .failure(let err):
+                self?.currentState.authorizedUser = nil
+                print(err.localizedDescription)
+            }
+        }.store(in: cancelBag)
     }
 }

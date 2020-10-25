@@ -8,27 +8,24 @@
 import Foundation
 import SwiftUI
 import Combine
-import KingfisherSwiftUI
-import class Kingfisher.ImageCache
 
 struct RepositoryItemView: View {
     
     var gitRepo: GitRepository
-    @State private var openItemDetails: Int? = nil
+    @State private var openRepoDetails: Int? = nil
     
     var body: some View {
         ZStack {
             NavigationLink(
                 destination: RespositoryDetailsView(repository: gitRepo),
                 tag: 2,
-                selection: $openItemDetails,
+                selection: $openRepoDetails,
                 label: {
                     EmptyView()
                 })
-            
-                Button(action: {
-                    self.openItemDetails = 2
-                }, label: {
+            Button(action: {
+                openRepoDetails = 2
+            }, label: {
                     VStack(alignment: .leading, content: {
                         Text(gitRepo.name).font(.title)
                         Text(gitRepo.language ?? "").font(.subheadline)
@@ -41,7 +38,7 @@ struct RepositoryItemView: View {
                                                                         stars: gitRepo.starsCount))
                         })
                     })
-                })
+            })
         }
 
     }
@@ -54,6 +51,7 @@ struct AuthorView: View {
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .leading, vertical: .center), content: {
+
             NavigationLink(
                 destination: UserDetailsView(author: author),
                 tag: 1,
@@ -78,18 +76,9 @@ struct AuthorView: View {
 
 struct AuthorAvatarView: View {
     var avatarUrl: String
-    @State var done = false
-    var alreadyCached: Bool {
-        ImageCache.default.isCached(forKey: avatarUrl)
-    }
     
     var body: some View {
-        KFImage(URL(string: avatarUrl), isLoaded: $done)
-            .resizable()
-            .cancelOnDisappear(true)
-            .aspectRatio(contentMode: .fit)
-            .opacity(done || alreadyCached ? 1.0 : 0.3)
-            .animation(.linear(duration: 0.4))
+        ImageView(withURL: avatarUrl)
     }
 }
 
@@ -117,6 +106,7 @@ struct CountersView: View {
                 Image("ic_issue")
                 Text("\(counter.issues)")
             })
-        })
+        }).animation(.easeIn)
     }
 }
+

@@ -38,6 +38,7 @@ private extension Publisher where Output == URLSession.DataTaskPublisher.Output 
                 guard httpCodes.contains(code) else {
                     throw APIError.httpCode(code)
                 }
+            debugPrint(($0.1 as? HTTPURLResponse).debugDescription)
                 return $0.0
             }
             .extractUnderlyingError()

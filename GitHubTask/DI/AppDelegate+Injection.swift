@@ -13,6 +13,7 @@ import Combine
 extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
         register { GitRepositoryServiceImpl() as GitRepositoryService }
-        register { MainVM() }
+        register { AuthorizationServiceImpl() as AuthorizationService }
+        register { UserDefaultsManagerImpl() as UserDefaultsManager }
     }
 }

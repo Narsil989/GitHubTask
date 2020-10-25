@@ -48,6 +48,21 @@ extension APICall {
         request.httpBody = try body()
         return request
     }
+    
+    func url() -> URL? {
+        guard let url = URL(string: self.baseURL + path) else {
+            return nil
+        }
+        var components = URLComponents(string: url.absoluteString)
+        components?.queryItems = queryParameters?.compactMap({ $0 })
+        guard let newUrl = components?.url else {
+            return nil
+        }
+        var request = URLRequest(url: newUrl)
+        request.httpMethod = method
+        request.allHTTPHeaderFields = headers
+        return request.url
+    }
 }
 
 typealias HTTPCode = Int

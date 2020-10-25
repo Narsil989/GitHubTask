@@ -9,8 +9,12 @@ import Foundation
 
 final class ApiConfig {
     
-    static var baseUrl: String {
+    static var baseApiUrl: String {
         return "https://api.github.com"
+    }
+    
+    static var baseUrl: String {
+        return "https://github.com"
     }
     
     static var defaultPageSize: Int {
@@ -34,6 +38,20 @@ final class ApiConfig {
         configuration.requestCachePolicy = .returnCacheDataElseLoad
         configuration.urlCache = .shared
         return URLSession(configuration: configuration)
+    }
+    
+    
+    struct AppCredentials {
+        let clientId: String
+        let clientSecret: String
+    }
+    static func appCredentials() -> AppCredentials {
+        if let clientId = Bundle.main.infoDictionary?["client_id"] as? String,
+           let clientSecret = Bundle.main.infoDictionary?["client_secret"] as? String {
+            return AppCredentials(clientId: clientId, clientSecret: clientSecret)
+        } else {
+            return AppCredentials(clientId: "", clientSecret: "")
+        }
     }
 }
 

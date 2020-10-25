@@ -37,8 +37,8 @@ func == (lhs: GitRepository, rhs: GitRepository) -> Bool {
 }
 
 extension GitRepository: Identifiable {
-    var id: String {
-        return "\(serverId)"
+    var id: Int {
+        return serverId
     }
 }
 
