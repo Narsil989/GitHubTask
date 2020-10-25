@@ -95,13 +95,15 @@ struct RepositoriesList: View {
                 Spacer()
             } else {
                 VStack {
+                    if isLoading {
+                        loadingIndicator
+                    }
                     List {
                         reposList
-                        if isLoading {
-                            loadingIndicator
-                        }
                     }
+                    .animation(.easeIn)
                 }
+                
             }
         }
     }
@@ -113,7 +115,7 @@ struct RepositoriesList: View {
                     self.onScrolledAtBottom()
                 }
             })
-        }.animation(.default)
+        }
     }
     
     private var loadingIndicator: some View {

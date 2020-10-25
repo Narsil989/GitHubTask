@@ -47,12 +47,10 @@ class MainVM: ObservableObject {
         }
         currentState.isLoading = true
         currentState.page = 1
-        currentState.repos = []
         service.repositories(searchText: searchQuery,
                              sortingOption: SortingKey.allCases[selectedSort],
                              pageNumber: currentState.page)
             .sinkToResult { [weak self] result in
-                DispatchQueue.main.async {
                     switch result {
                     case .success(let repos):
                         self?.currentState.repos = repos.items
@@ -62,7 +60,6 @@ class MainVM: ObservableObject {
                         self?.currentState.loadingError = err
                     }
                     self?.currentState.isLoading = false
-                }
             }.store(in: cancelBag)
     }
     
@@ -79,8 +76,6 @@ class MainVM: ObservableObject {
                              sortingOption: SortingKey.allCases[selectedSort],
                              pageNumber: currentState.page)
             .sinkToResult { [weak self] result in
-                
-                //DispatchQueue.main.async {
                     switch result {
                     case .success(let repos):
                         self?.currentState.repos += repos.items
@@ -90,7 +85,6 @@ class MainVM: ObservableObject {
                         self?.currentState.loadingError = err
                     }
                     self?.currentState.isLoading = false
-                //}
             }.store(in: cancelBag)
     }
     

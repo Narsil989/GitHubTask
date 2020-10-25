@@ -21,7 +21,7 @@ class GitRepositoryServiceImpl: GitRepositoryService, WebRepository {
     let cancelBag = CancelBag()
     
     func repositories(searchText: String, sortingOption: SortingKey?, pageNumber: Int) -> AnyPublisher<GitRepositoriesResponse, Error> {
-        call(endpoint: ApiEndpoint.searchRepos(searchText: searchText, sortBy: sortingOption, pageNumber: pageNumber)).ensureTimeSpan(1)
+        call(endpoint: ApiEndpoint.searchRepos(searchText: searchText, sortBy: sortingOption, pageNumber: pageNumber)).ensureTimeSpan(0.5)
     }
     
     func repositoryDetails(repository: GitRepository) -> AnyPublisher<GitRepositoryDetails, Error> {

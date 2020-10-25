@@ -106,7 +106,7 @@ struct CountersView: View {
                 Image("ic_issue")
                 Text("\(counter.issues)")
             })
-        }).animation(.easeIn)
+        })
     }
 }
 
