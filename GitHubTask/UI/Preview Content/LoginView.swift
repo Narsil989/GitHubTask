@@ -12,7 +12,6 @@ import SafariServices
 
 struct LoginView: View {
     
-    @Injected private var service: AuthorizationService
     @Environment(\.presentationMode) var presentationMode
     
     private var cancelBag = CancelBag()
