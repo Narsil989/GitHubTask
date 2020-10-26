@@ -9,7 +9,6 @@ import SwiftUI
 import Combine
 import Resolver
 import Foundation
-import KingfisherSwiftUI
 
 struct MainView: View {
     
