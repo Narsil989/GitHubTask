@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import Resolver
-import KingfisherSwiftUI
 
 struct UserDetailsView: View {
     
